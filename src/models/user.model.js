@@ -3,7 +3,7 @@
  import bcrypt  from "bcryptjs";
 
  const userSchema = new Schema({
-    usename :{
+    username :{
         type : String,
         required : true,
         unique : true,
@@ -29,6 +29,10 @@
     avatar : {
         type : String,
         required : true,
+    },
+    coverImage : {
+        type : String,
+        required : false,
     },
     watchHistory : [
         {

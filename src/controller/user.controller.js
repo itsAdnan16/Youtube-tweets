@@ -7,6 +7,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 const registerUser = asyncHandler(async (req,res)=>{
+    console.log('req.body:', req.body);
     
     //first i have to get information from the frontend
     const {fullName,email,username,password} = req.body;
@@ -46,7 +47,28 @@ const registerUser = asyncHandler(async (req,res)=>{
         throw new ApiError(500,"Error while uploading the avatar image");
     }
 
-    const user = await User.coverImage
+    const user = await User.create({
+        fullName,
+        email,
+        username : username.toLowerCase(),
+        password,
+        avatar: avatar.url,
+        coverImage: coverImage?.url, 
+       
+        
+    })
+
+    const createdUser = await User.findById(user._id).select(
+        "-password -refreshToken"
+    )
+
+    if (!createdUser) {
+        throw new ApiError(500, "Something went wrong while registering the user")
+    }
+
+    return res.status(201).json(
+        new ApiResponse(200, createdUser, "User registered Successfully")
+    )
 
 
 
